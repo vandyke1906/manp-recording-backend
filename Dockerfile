@@ -30,6 +30,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 RUN composer install --no-dev --optimize-autoloader
 RUN php artisan config:cache
 RUN php artisan route:cache
+RUN php artisan queue:work
 
 # Expose port 80 for Render
 EXPOSE 80
