@@ -9,7 +9,7 @@ php artisan view:cache
 php artisan migrate --force
 
 # Start PHP-FPM in the background
-php-fpm &
+php-fpm listen=127.0.0.1:9000 &
 
 # Start Nginx in the background
 nginx &
