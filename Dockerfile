@@ -30,10 +30,16 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 RUN composer install --no-dev --optimize-autoloader
 RUN php artisan config:cache
 RUN php artisan route:cache
-RUN php artisan queue:work
+
+
+# Copy the startup script
+COPY docker-start.sh /docker-start.sh
+RUN chmod +x /docker-start.sh
+
 
 # Expose port 80 for Render
 EXPOSE 80
 
 # Start Nginx and PHP-FPM
-CMD ["sh", "-c", "nginx && php-fpm"]
+#CMD ["sh", "-c", "nginx && php-fpm"]
+CMD ["sh", "/start.sh"]
