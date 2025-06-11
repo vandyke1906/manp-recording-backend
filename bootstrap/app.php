@@ -29,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->prepend(EnsureFrontendRequestsAreStateful::class);
-        $middleware->prepend(CorsMiddleware::class); // ✅ Ensure it is globally applied
+        // $middleware->prepend(CorsMiddleware::class); // ✅ Ensure it is globally applied - #disabled CORS
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
