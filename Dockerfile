@@ -31,6 +31,8 @@ RUN composer install --no-dev --optimize-autoloader
 RUN php artisan config:cache
 RUN php artisan route:cache
 
+RUN sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/www.conf
+
 
 # Copy the startup script
 COPY docker-start.sh /docker-start.sh
