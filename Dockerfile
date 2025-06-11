@@ -42,4 +42,4 @@ EXPOSE 80
 
 # Start Nginx and PHP-FPM
 #CMD ["sh", "-c", "nginx && php-fpm"]
-CMD ["sh", "/start.sh"]
+CMD ["sh", "/docker-start.sh"]
