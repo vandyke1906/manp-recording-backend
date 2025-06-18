@@ -54,7 +54,8 @@ Route::get('/download-file/{business_name}/{file_name}', function ($business_nam
 })->name('download-file');
 
 
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
+// Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
+Route::middleware(['signed'])->get('/email/verify/{id}/{hash}', [AuthController::class, 'verify']);
 
 
 //test here
