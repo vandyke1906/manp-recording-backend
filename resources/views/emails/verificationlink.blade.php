@@ -39,8 +39,8 @@
         <p>Thank you for registering with us. To complete your account setup, please verify your email address by visiting the link below:</p>
 
         <p>
-            <a href="{{ $verificationLink }}" style="color: inherit; text-decoration: underline; font-weight: normal;">
-                {{ $verificationLink }}
+            <a href="{{ $verificationLink }}" style="color: inherit; text-decoration: underline; font-weight: bold;">
+                Click here to verify your account
             </a>
         </p>
 
