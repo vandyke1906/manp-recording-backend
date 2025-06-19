@@ -80,6 +80,7 @@ class ApplicationRepository implements ApplicationInterface
     }
     
     public function delete($id){
-        Application::destroy($id);
+        $application = Application::findOrFail($id);
+        $application->delete(); // This triggers soft delete if the model uses SoftDeletes
     }
 }
