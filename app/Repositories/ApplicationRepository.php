@@ -14,20 +14,9 @@ class ApplicationRepository implements ApplicationInterface
     }
 
     public function index($user){
-        // switch($user->role){
-        //     case Roles::PROPONENTS: {
-        //         return Application::where("user_id", $user->id)->get();
-        //     }
-        //     case Roles::RPS_TEAM: 
-        //     case Roles::MANAGER: 
-        //     case Roles::ADMINISTRATOR: {
-        //         return Application::all();
-        //     }
-        //     default: return [];
-        // }
         switch ($user->role) {
             case Roles::PROPONENTS: {
-                return Application::where("user_id", $user->id)
+                return Application::withTrashed()->where("user_id", $user->id)
                 ->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
                 }])->get();
@@ -52,7 +41,7 @@ class ApplicationRepository implements ApplicationInterface
 
         switch ($user->role) {
             case Roles::PROPONENTS: {
-                return Application::with(['approvals' => function ($query) {
+                return Application::withTrashed()->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
                 }, 'approvals.approver_name'])->where('id', $id)->where('user_id', $user->id)->firstOrFail();
             }
