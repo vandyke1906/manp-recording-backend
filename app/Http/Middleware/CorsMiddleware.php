@@ -19,6 +19,7 @@ class CorsMiddleware
         $allowedOrigins = [
             'http://localhost:5173',
             'https://mountapo-app.netlify.app',
+            'http://mountapo-app.netlify.app',
         ];
 
         $origin = $request->headers->get('Origin');
@@ -28,8 +29,7 @@ class CorsMiddleware
                 return response()->json([], 200, [
                     'Access-Control-Allow-Origin' => $origin,
                     'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
-                    'Access-Control-Allow-Headers' => 'Content-Type, X-XSRF-TOKEN, Authorization',
-                    'Access-Control-Allow-Credentials' => 'true',
+                    'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
                 ]);
             } else {
                 return response()->json(['message' => 'CORS not allowed.'], 403);
@@ -42,11 +42,9 @@ class CorsMiddleware
         if (in_array($origin, $allowedOrigins)) {
             $response->headers->set('Access-Control-Allow-Origin', $origin);
             $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, X-XSRF-TOKEN, Authorization');
-            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         }
 
         return $response;
-
     }
 }
