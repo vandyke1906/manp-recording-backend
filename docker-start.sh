@@ -5,6 +5,9 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# Create symbolic link for public storage access
+php artisan storage:link
+
 # Run database migrations if needed
 php artisan migrate --force
 
