@@ -81,11 +81,11 @@ class AuthController extends Controller
                 'password' => $request->password,
             ];
             $result = $this->interface->login($data);
-            $cookie = null;
-            if(isset($result->refreshToken))
-                $cookie = cookie('refresh_token', $result->refreshToken, 60 * 24 * 7, '/', null, true, true); // Secure HttpOnly cookie
+            // $cookie = null;
+            // if(isset($result->refreshToken))
+            //     $cookie = cookie('refresh_token', $result->refreshToken, 60 * 24 * 7, '/', null, true, true); // Secure HttpOnly cookie
             if($result->verified){
-                return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 200, $cookie);
+                return ApiResponseClass::sendResponse(new AuthResource($result),'Login successful.', 200);
             } else {
                 return ApiResponseClass::sendResponse(new AuthResource($result),'Required verification.', 201);
             }
