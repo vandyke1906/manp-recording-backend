@@ -22,7 +22,7 @@ Route::post('/verify', [AuthController::class, 'verifyCode']);
 Route::post('/request-verification-link', [AuthController::class, 'sendVerificationLink']);
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed'])->name('verification.verify');//name added for jobs in SendVerificationLink.php
 
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/auth/check', [AuthController::class, 'authCheck']);
     Route::post('/auth/refresh', [AuthController::class, 'refreshToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
