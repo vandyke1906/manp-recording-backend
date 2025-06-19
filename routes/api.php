@@ -20,7 +20,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/send-verification', [AuthController::class, 'sendVerificationEmail']);
 Route::post('/verify', [AuthController::class, 'verifyCode']);
 Route::post('/request-verification-link', [AuthController::class, 'sendVerificationLink']);
-Route::middleware(['signed'])->get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verification.verify'); //name added for jobs in SendVerificationLink.php
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed'])->name('verification.verify');//name added for jobs in SendVerificationLink.php
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/auth/check', [AuthController::class, 'authCheck']);
@@ -54,9 +54,6 @@ Route::get('/download-file/{business_name}/{file_name}', function ($business_nam
     }
     return response()->file($path, ['Content-Type' => mime_content_type($path)]);
 })->name('download-file');
-
-
-// Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
 
 
 //test here
