@@ -44,16 +44,28 @@ class ApplicationRepository implements ApplicationInterface
         }
     }
 
-    public function getById($id){
-        return Application::with(['approvals' => function ($query) {
-            $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
-        }, 'approvals.approver_name'])->findOrFail($id);
+    public function getById($id, $user=null){
+        if(!$user)
+            return Application::with(['approvals' => function ($query) {
+                $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+            }, 'approvals.approver_name'])->findOrFail($id);
 
-        //return Application::findOrFail($id);
-
-        // return Application::with(['approvals' => function ($query) {
-        //     $query->orderBy('approved_at', 'asc'); // Ensures approvals appear in sequenc
-        // }])->findOrFail($id);
+        switch ($user->role) {
+            case Roles::PROPONENTS: {
+                return Application::with(['approvals' => function ($query) {
+                    $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+                }, 'approvals.approver_name'])->where('id', $id)->where('user_id', $user->id)->firstOrFail();
+            }
+            case Roles::RPS_TEAM:
+            case Roles::MANAGER:
+            case Roles::ADMINISTRATOR: {
+                return Application::with(['approvals' => function ($query) {
+                    $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+                }, 'approvals.approver_name'])->findOrFail($id);
+            }
+            default:
+                return [];
+        }
     }
 
     public function store(array $data){ 

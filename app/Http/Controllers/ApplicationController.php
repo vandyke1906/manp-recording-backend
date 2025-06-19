@@ -125,8 +125,9 @@ class ApplicationController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $user = $request->user();
         $application = $this->interface->getById($id);
         if($application){
             $applicant_types = $this->applicant_application_interface->getByApplicationId($id);
