@@ -30,6 +30,7 @@ class CorsMiddleware
                     'Access-Control-Allow-Origin' => $origin,
                     'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
                     'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+                    'Vary' => 'Origin',
                 ]);
             } else {
                 return response()->json(['message' => 'CORS not allowed.'], 403);
@@ -43,6 +44,7 @@ class CorsMiddleware
             $response->headers->set('Access-Control-Allow-Origin', $origin);
             $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
             $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            $response->headers->set('Vary', 'Origin');
         }
 
         return $response;
