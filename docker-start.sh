@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# Ensure Laravel caches are up-to-date
-php artisan view:cache
+# Ensure Laravel clear are up-to-date
 php artisan config:clear
+php artisan cache:clear
 php artisan route:clear
 
 # Create symbolic link for public storage access
