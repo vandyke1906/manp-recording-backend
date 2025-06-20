@@ -25,7 +25,7 @@ class ApiResponseClass
         throw new HttpResponseException(response()->json(["message"=> $message], 500));
     }
 
-    public static function sendResponse($result , $message ,$code=200, $success = true, $cookie = null){
+    public static function sendResponse($result , $message ,$code=200, $success = true){
         $response=[
             'success' => $success,
             'data'    => $result
@@ -33,8 +33,14 @@ class ApiResponseClass
         if(!empty($message)){
             $response['message'] =$message;
         }
-        if($cookie)
-             return response()->json($response, $code)->withCookie($cookie);
-        return response()->json($response, $code);
+
+        $origin = request()->header('Origin');
+        $headers = [
+            'Access-Control-Allow-Origin' => $origin ?? '*',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With',
+        ];
+
+        return response()->json($response, $code)->withHeaders($headers);
     }
 }
