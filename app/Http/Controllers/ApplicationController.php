@@ -153,13 +153,11 @@ class ApplicationController extends Controller
         $userId = $request->user()->id;
         $userRole = $request->user()->role;
         $application  = null;
-        Log::debug([$userId, $id]);
         if($userRole == hexdec(Roles::PROPONENTS))
             $application = Application::withTrashed()->where('id', $id)->where('user_id', $userId)->first();
         else 
             $application = Application::where('id', $id)->first();
 
-        Log::debug($application);
         if (!$application) {
             return ApiResponseClass::sendResponse([], 'Application not found or unauthorized', 404);
         }

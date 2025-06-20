@@ -15,6 +15,11 @@ use App\Http\Controllers\ApprovalController;
 
 use Illuminate\Support\Facades\Log;
 
+// Route::options('/{any}', function () { return response()->json([], 204); })->where('any', '.*');
+Route::options('/{any}', function () {
+    return response()->json([], 204);
+})->where('any', '.*');
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/send-verification', [AuthController::class, 'sendVerificationEmail']);

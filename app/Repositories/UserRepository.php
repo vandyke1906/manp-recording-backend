@@ -108,7 +108,6 @@ class UserRepository implements AuthInterface
     public function verifyCode(){}
     public function verify($id, $hash){
         $user = User::findOrFail($id);
-        Log::debug($user);
         if (!hash_equals(sha1($user->email), $hash)) return null;
 
         $token = $user->createToken("manp-token")->plainTextToken;
@@ -126,7 +125,6 @@ class UserRepository implements AuthInterface
         // if ($user->hasVerifiedEmail())
         //     return $result;
         // Mark email as verified
-        Log::debug($user);
         $user->markEmailAsVerified();
         $user->verified = true;
         return $result;

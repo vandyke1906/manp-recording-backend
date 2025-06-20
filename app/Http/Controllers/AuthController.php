@@ -146,8 +146,6 @@ class AuthController extends Controller
 
     public function refreshToken(Request $request)
     {
-        Log::info('Incoming refresh token request.');
-        Log::info('Cookies:', ['cookies' => $request->cookies->all()]);
         $user = $request->user();
         if ($user) {
             $user->currentAccessToken()->delete();
@@ -179,7 +177,6 @@ class AuthController extends Controller
         if (!$user) {
             return ApiResponseClass::sendResponse([], 'User not found.', 200, false);
         }
-        Log::debug($user);
         if(is_null($user->email_verified_at)){
         dispatch(new SendVerificationLink($user->email, $user));
         return ApiResponseClass::sendResponse([], 'Verification link sent. Please check your email', 200);
