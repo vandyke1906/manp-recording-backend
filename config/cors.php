@@ -23,5 +23,5 @@ return [
     'allowed_origins_patterns' => [],
     'exposed_headers' => [],
     'max_age' => 0,
-    'supports_credentials' => false, //default is false
+    'supports_credentials' => true, //default is false
 ];
