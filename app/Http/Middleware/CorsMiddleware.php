@@ -17,9 +17,9 @@ class CorsMiddleware
     {
         //return $next($request);
         $allowedOrigins = [
-            'http://localhost:5173',
             'https://mountapo-app.netlify.app',
             'http://mountapo-app.netlify.app',
+            'http://localhost:5173',
         ];
 
         $origin = $request->headers->get('Origin');
