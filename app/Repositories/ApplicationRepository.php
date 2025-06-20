@@ -70,6 +70,10 @@ class ApplicationRepository implements ApplicationInterface
     
     public function delete($id){
         $application = Application::findOrFail($id);
-        $application->delete(); // This triggers soft delete if the model uses SoftDeletes
+        if($application){
+            $application->delete(); // This triggers soft delete if the model uses SoftDeletes
+            return true;
+        }
+        return false;
     }
 }

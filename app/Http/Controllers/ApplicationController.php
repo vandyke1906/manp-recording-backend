@@ -205,8 +205,9 @@ class ApplicationController extends Controller
 
     public function destroy($id)
     {
-        $this->interface->delete($id);
-        return ApiResponseClass::sendResponse($id, 'Application deleted successfully.',201);
+        if($this->interface->delete($id))
+            return ApiResponseClass::sendResponse($id, 'Application deleted successfully.',201);
+        return ApiResponseClass::sendResponse([], 'Failed to delete application.',201, false);
     }
 
     function humanReadable($string) {
