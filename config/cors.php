@@ -19,7 +19,8 @@ return [
     'paths' => ['api/*'],
     'allowed_methods' => ['*'],
     'allowed_headers' => ['*'],
-    'allowed_origins' => ['http://mountapo-app.netlify.app', 'https://mountapo-app.netlify.app', 'http://localhost:5173'], // Allow React frontend
+    // 'allowed_origins' => ['http://mountapo-app.netlify.app', 'https://mountapo-app.netlify.app', 'http://localhost:5173'], // Allow React frontend
+    'allowed_origins' => ["*"], // Allow React frontend
     'allowed_origins_patterns' => [],
     'exposed_headers' => [],
     'max_age' => 0,
