@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 use App\Models\Application;
+use App\Models\Approval;
 use App\Interfaces\ApplicationInterface;
 
 use App\Constants\Roles;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ApplicationRepository implements ApplicationInterface
@@ -34,10 +36,11 @@ class ApplicationRepository implements ApplicationInterface
     }
 
     public function getById($id, $user=null){
-        if(!$user)
+        if(!$user){
             return Application::with(['approvals' => function ($query) {
                 $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
             }, 'approvals.approver_name'])->findOrFail($id);
+        }
 
         switch ($user->role) {
             case Roles::PROPONENTS: {
@@ -72,6 +75,14 @@ class ApplicationRepository implements ApplicationInterface
         $application = Application::findOrFail($id);
         if($application){
             $application->delete(); // This triggers soft delete if the model uses SoftDeletes
+            //Approval::where('application_id',$id)->get();
+             Approval::create([
+                'application_id' => $id,
+                'approving_role' => Roles::PROPONENTS,
+                'user_id' => $application->user_id,
+                'status' => 'cancelled', // Allow re-submission
+                'approved_at' => Carbon::now(),
+            ]);
             return true;
         }
         return false;
