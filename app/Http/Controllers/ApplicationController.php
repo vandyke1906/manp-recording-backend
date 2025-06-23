@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use App\Interfaces\ApplicationInterface;
 use App\Http\Resources\ApplicationResource;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
 use App\Interfaces\ApplicantTypeApplicationInterface;
@@ -94,23 +95,46 @@ class ApplicationController extends Controller
             foreach ($application_files as $key => $file) {
                 if ($file instanceof UploadedFile && !$file->getError()) {
                     $mimeType = $file->getClientMimeType();
-                    $folder_business = Str::slug($request->business_name);
                     $extension = $file->getClientOriginalExtension();
                     $fileName = "{$key}.{$extension}";
-                    $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
-                    $data_file = [
-                        'application_id' => $application->id,
-                        'name' => $key,
-                        'file_name' => $fileName,
-                        'file_size' => $file->getSize(),
-                        'file_type' => $mimeType,
-                        'file_path' => $filePath,
-                    ];
+                    $folder_business = Str::slug($request->business_name);
+                    
+                    if (app()->environment('local')) {
+                        // Save locally during development
+                        $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
+
+                        $data_file = [
+                            'application_id' => $application->id,
+                            'name' => $key,
+                            'file_name' => $fileName,
+                            'file_size' => $file->getSize(),
+                            'file_type' => $mimeType,
+                            'file_path' => $filePath,
+                        ];
+                    } else {
+                        // Upload to Cloudinary in production
+                        $uploadResult = Cloudinary::upload($file->getRealPath(), [
+                            'folder' => "application_files/{$folder_business}",
+                            'public_id' => $key,
+                            'resource_type' => 'auto' // auto-detect image/pdf/etc
+                        ]);
+
+                        $data_file = [
+                            'application_id' => $application->id,
+                            'name' => $key,
+                            'file_name' => $fileName,
+                            'file_size' => $file->getSize(),
+                            'file_type' => $mimeType,
+                            'file_path' => $uploadResult->getSecurePath(), // Cloudinary URL
+                        ];
+                    }
+
                     $this->application_files_interface->store($data_file);
                 } else {
                     Log::warning("Error uploading $key");
                 }
             }
+
 
             //intial empty approval
             Approval::create([

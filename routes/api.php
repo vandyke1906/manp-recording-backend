@@ -53,11 +53,32 @@ Route::get('/download-file/{business_name}/{file_name}', function ($business_nam
     if (!request()->hasValidSignature()) {
         abort(403, 'Unauthorized access');
     }
-    $path = storage_path("app/private/application_files/{$business_name}/{$file_name}");
-    if (!file_exists($path)) {
-        return response()->json(['message' => 'File not found'], 404);
+    // $path = storage_path("app/private/application_files/{$business_name}/{$file_name}");
+    // if (!file_exists($path)) {
+    //     return response()->json(['message' => 'File not found'], 404);
+    // }
+    // return response()->file($path, ['Content-Type' => mime_content_type($path)]);
+    if (app()->environment('local')) {
+        // Local: serve file from storage
+        $path = storage_path("app/private/application_files/{$business_name}/{$file_name}");
+        if (!file_exists($path)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        return response()->file($path, ['Content-Type' => mime_content_type($path)]);
+    } else {
+        // Production: assume Cloudinary URL is stored in the DB
+        $fileRecord = App\Models\ApplicationFiles::where('file_name', $file_name)
+            ->whereHas('application', fn ($q) => $q->where('business_name', $business_name))
+            ->first();
+
+        if (!$fileRecord || !Illuminate\Support\Str::startsWith($fileRecord->file_path, 'http')) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        return redirect()->away($fileRecord->file_path); // Redirect to Cloudinary-hosted file
     }
-    return response()->file($path, ['Content-Type' => mime_content_type($path)]);
+
 })->name('download-file');
 
 
