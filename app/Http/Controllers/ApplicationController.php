@@ -76,8 +76,11 @@ class ApplicationController extends Controller
             'ncip_document' => $request->ncip_document,
             'fpic_certification' => $request->fpic_certification,
             'business_permit' => $request->business_permit, 
-            'authorization_letter' => $request->authorization_letter, 
         ];
+        if ($request->hasFile('authorization_letter')) {
+            $application_files['authorization_letter'] = $request->authorization_letter;
+        }
+
         DB::beginTransaction();
         try{
             $application = $this->interface->store($application_data);
@@ -105,7 +108,7 @@ class ApplicationController extends Controller
                     ];
                     $this->application_files_interface->store($data_file);
                 } else {
-                    echo "Error uploading $key\n";
+                    Log::warning("Error uploading $key");
                 }
             }
 

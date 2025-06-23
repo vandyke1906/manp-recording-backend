@@ -33,15 +33,6 @@ class ApiResponseClass
         if(!empty($message)){
             $response['message'] =$message;
         }
-
-        $origin = request()->header('Origin');
-        $headers = [
-            'Access-Control-Allow-Origin' => $origin ?? '*',
-            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With',
-            'X-Debug-CORS' => 'yes',
-        ];
-
-        return response()->json($response, $code)->withHeaders($headers);
+        return response()->json($response, $code);
     }
 }

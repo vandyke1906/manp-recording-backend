@@ -29,8 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
     // })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->prepend(CorsMiddleware::class); // ✅ Ensure it is globally applied
-        // $middleware->prepend(HandleCors::class); // ✅ Ensure it is globally applied
-        // $middleware->statefulApi();
         $middleware->trustProxies(
             at: '*',
             headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO
