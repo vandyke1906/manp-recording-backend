@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use App\Interfaces\ApplicationInterface;
 use App\Http\Resources\ApplicationResource;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
 use App\Interfaces\ApplicantTypeApplicationInterface;
@@ -95,46 +94,23 @@ class ApplicationController extends Controller
             foreach ($application_files as $key => $file) {
                 if ($file instanceof UploadedFile && !$file->getError()) {
                     $mimeType = $file->getClientMimeType();
+                    $folder_business = Str::slug($request->business_name);
                     $extension = $file->getClientOriginalExtension();
                     $fileName = "{$key}.{$extension}";
-                    $folder_business = Str::slug($request->business_name);
-                    
-                    if (app()->environment('local')) {
-                        // Save locally during development
-                        $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
-
-                        $data_file = [
-                            'application_id' => $application->id,
-                            'name' => $key,
-                            'file_name' => $fileName,
-                            'file_size' => $file->getSize(),
-                            'file_type' => $mimeType,
-                            'file_path' => $filePath,
-                        ];
-                    } else {
-                        // Upload to Cloudinary in production
-                        $uploadResult = Cloudinary::upload($file->getRealPath(), [
-                            'folder' => "application_files/{$folder_business}",
-                            'public_id' => $key,
-                            'resource_type' => 'auto' // auto-detect image/pdf/etc
-                        ]);
-
-                        $data_file = [
-                            'application_id' => $application->id,
-                            'name' => $key,
-                            'file_name' => $fileName,
-                            'file_size' => $file->getSize(),
-                            'file_type' => $mimeType,
-                            'file_path' => $uploadResult->getSecurePath(), // Cloudinary URL
-                        ];
-                    }
-
+                    $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
+                    $data_file = [
+                        'application_id' => $application->id,
+                        'name' => $key,
+                        'file_name' => $fileName,
+                        'file_size' => $file->getSize(),
+                        'file_type' => $mimeType,
+                        'file_path' => $filePath,
+                    ];
                     $this->application_files_interface->store($data_file);
                 } else {
                     Log::warning("Error uploading $key");
                 }
             }
-
 
             //intial empty approval
             Approval::create([
@@ -203,6 +179,7 @@ class ApplicationController extends Controller
         $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
         return response()->json([
             'uri' => $signedUrl,
+            'title' => $application_file->name,
             'file_type' => $application_file->file_type,
             'file_size' => $application_file->file_size,
             'file_name' => $application_file->file_name,
