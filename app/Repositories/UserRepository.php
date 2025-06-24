@@ -66,8 +66,8 @@ class UserRepository implements AuthInterface
                 throw new \ErrorException('Invalid Credentials.');
             }
             
-            $token = $user->createToken('manp-token')->plainTextToken;
-            $refreshToken = $user->createToken('refresh_token')->plainTextToken;// Set refresh token in HttpOnly cookie
+            $token =tap($user->createToken('manp-token'), fn($t) => $t->accessToken->update(['expires_at' => now()->addDay()]))->plainTextToken;
+            $refreshToken = tap($user->createToken('refresh_token'), fn($t) => $t->accessToken->update(['expires_at' => now()->addDays(7)]))->plainTextToken;
             $result = null;
             if(isset($user->email_verified_at)){
                 $result = (object)[

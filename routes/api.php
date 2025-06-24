@@ -12,6 +12,7 @@ use App\Http\Controllers\BusinessStatusController;
 use App\Http\Controllers\BusinessNatureController;
 use App\Http\Controllers\CapitalizationController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\ApplicationFilesController;
 
 use Illuminate\Support\Facades\Log;
 
@@ -46,6 +47,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/business-natures',BusinessNatureController::class);
     Route::apiResource('/business-statuses',BusinessStatusController::class);  
     Route::apiResource('/approvals',ApprovalController::class); 
+    // Route::apiResource('/application-files',ApplicationFilesController::class);
+    Route::post('/application-files/{file_id}',[ApplicationFilesController::class, 'update']);
     Route::post('/approvals/{id}/confirm-submission', [ApprovalController::class, 'confirmDocumentsSubmission']);    
 });
 

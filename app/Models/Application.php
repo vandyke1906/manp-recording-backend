@@ -49,5 +49,10 @@ class Application extends Model
             ->value('approving_role'); // make sure this is the correct column
     }
 
+    public function files()
+    {
+        return $this->hasMany(ApplicationFiles::class);
+    }
+
 
 }
