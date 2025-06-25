@@ -13,7 +13,6 @@ use App\Http\Controllers\BusinessNatureController;
 use App\Http\Controllers\CapitalizationController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\ApplicationFilesController;
-
 use Illuminate\Support\Facades\Log;
 
 // Route::options('/{any}', function () { return response()->json([], 204); })->where('any', '.*');
@@ -26,7 +25,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/send-verification', [AuthController::class, 'sendVerificationEmail']);
 Route::post('/verify', [AuthController::class, 'verifyCode']);
 Route::post('/request-verification-link', [AuthController::class, 'sendVerificationLink']);
+Route::post('/request-password-reset', [AuthController::class, 'sendResetPassword']);
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed'])->name('verification.verify');//name added for jobs in SendVerificationLink.php
+Route::post('/password-reset/{email}/{hash}', [AuthController::class, 'resetPassword'])->middleware(['signed'])->name('password.reset.verify');//name added for jobs in SendVerificationLink.php
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/auth/check', [AuthController::class, 'authCheck']);
