@@ -116,19 +116,19 @@ class ApplicationController extends Controller
             // Generate PDF summary
            // Generate PDF with static or custom data
             $pdf = Pdf::loadView('documents.sapa_application_template', [
-                'title' => 'Standalone Summary',
+                'title' => 'SAPA Application Form',
                 'date' => now()->format('F j, Y'),
             ]);
 
             // Store the PDF
-            $pdfFileName = 'SAPA_Application_Form.pdf';
+            $pdfFileName = 'sapa_application_form.pdf';
             $pdfFilePath = "application_files/{$folder_business}/{$pdfFileName}";
             Storage::put($pdfFilePath, $pdf->output());
 
             // Save metadata like other files
             $data_file = [
                 'application_id' => $application->id,
-                'name' => 'summary',
+                'name' => 'sapa_application_form',
                 'file_name' => $pdfFileName,
                 'file_size' => Storage::size($pdfFilePath),
                 'file_type' => 'application/pdf',
