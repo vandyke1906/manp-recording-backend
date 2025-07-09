@@ -30,7 +30,7 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->midd
 Route::post('/password-reset/{email}/{hash}', [AuthController::class, 'resetPassword'])->middleware(['signed'])->name('password.reset.verify');//name added for jobs in SendVerificationLink.php
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/auth/check', [AuthController::class, 'authCheck']);
+    Route::middleware('throttle:auth-check')->get('/auth/check', [AuthController::class, 'authCheck']);
     Route::post('/auth/refresh', [AuthController::class, 'refreshToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
