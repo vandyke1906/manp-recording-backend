@@ -16,9 +16,9 @@ use App\Http\Controllers\ApplicationFilesController;
 use Illuminate\Support\Facades\Log;
 
 // Route::options('/{any}', function () { return response()->json([], 204); })->where('any', '.*');
-Route::options('/{any}', function () {
-    return response()->json([], 204);
-})->where('any', '.*');
+// Route::options('/{any}', function () {
+//     return response()->json([], 204);
+// })->where('any', '.*');
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -53,36 +53,33 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/approvals/{id}/confirm-submission', [ApprovalController::class, 'confirmDocumentsSubmission']);    
 });
 
-Route::get('/download-file/{business_name}/{file_name}', function ($business_name, $file_name) {
+// Route::get('/download-file', function () {
+//         return response()->json([
+//         'test' => 'okay',
+//     ]);
+// });
+
+Route::get('/download-file', function () {
+    $businessName = request()->query('business_name');
+    $filename = request()->query('file_name');
     if (!request()->hasValidSignature()) {
-        abort(403, 'Unauthorized access');
+        return response()->json([
+            'message' => 'Unauthorized access',
+        ], 403);
     }
-    // $path = storage_path("app/private/application_files/{$business_name}/{$file_name}");
-    // if (!file_exists($path)) {
-    //     return response()->json(['message' => 'File not found'], 404);
-    // }
-    // return response()->file($path, ['Content-Type' => mime_content_type($path)]);
-    if (app()->environment('local')) {
-        // Local: serve file from storage
-        $path = storage_path("app/private/application_files/{$business_name}/{$file_name}");
-        if (!file_exists($path)) {
-            return response()->json(['message' => 'File not found'], 404);
-        }
+    // $path = storage_path("app/private/application_files/{$businessName}/{$filename}");
+    // $path = storage_path('app' . DIRECTORY_SEPARATOR .'private' . DIRECTORY_SEPARATOR .'application_files' . DIRECTORY_SEPARATOR .$businessName . DIRECTORY_SEPARATOR .$filename);
+    $path = storage_path(implode(DIRECTORY_SEPARATOR, ['app','private','application_files',$businessName,$filename]));
+    Log::info("Checking file path: {$path}");
 
-        return response()->file($path, ['Content-Type' => mime_content_type($path)]);
-    } else {
-        // Production: assume Cloudinary URL is stored in the DB
-        $fileRecord = App\Models\ApplicationFiles::where('file_name', $file_name)
-            ->whereHas('application', fn ($q) => $q->where('business_name', $business_name))
-            ->first();
-
-        if (!$fileRecord || !Illuminate\Support\Str::startsWith($fileRecord->file_path, 'http')) {
-            return response()->json(['message' => 'File not found'], 404);
-        }
-
-        return redirect()->away($fileRecord->file_path); // Redirect to Cloudinary-hosted file
+    if (!file_exists($path)) {
+        return response()->json(['message' => 'File not found'], 404); // <-- fixed typo from 'jdson' to 'json'
     }
 
+    return response()->file($path, [
+        'Content-Type' => mime_content_type($path),
+        'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
+    ]);
 })->name('download-file');
 
 
@@ -98,4 +95,11 @@ Route::get('/auth/session-debug', function () {
         'session_id' => session()->getId(),
         'session_data' => session()->all(),
     ]);
+});
+
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Route not found.'
+    ], 404);
 });
