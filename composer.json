@@ -71,7 +71,15 @@
         "dev": [
             "php -S 127.0.0.1:8080 -t public"
         ],
-        "devq": "concurrently \"php artisan queue:work\" \"php -S 127.0.0.1:8080 -t public\""
+        "devq": "concurrently \"php artisan queue:work\" \"php -S 127.0.0.1:8080 -t public\"",
+        "serve": "concurrently \"php artisan queue:work\" \"php artisan serve --port=8080\"",
+        "testdata": [
+            "@php artisan migrate",
+            "@php artisan db:seed"
+        ],
+        "resetmigrate": [
+            "php artisan migrate:refresh --seed"
+        ]
     },
     "extra": {
         "laravel": {

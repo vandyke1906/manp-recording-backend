@@ -54,5 +54,10 @@ class Application extends Model
         return $this->hasMany(ApplicationFiles::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    
 
 }

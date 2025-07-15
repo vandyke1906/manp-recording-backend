@@ -38,8 +38,6 @@ class BusinessNatureSeeder extends Seeder
             'Water Refilling Station',
             'Water Supply and Distribution Services',
             'Special Events',
-            'PAMB Clearance',
-            'Electrification',
         ];
 
         foreach ($data as $obj) {

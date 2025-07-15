@@ -10,6 +10,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Constants\Roles;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\ApplicationApplied;
+use App\Helpers\ApprovalHelper;
+use Illuminate\Support\Facades\Notification;
 
 class ApplicationRepository implements ApplicationInterface
 {
@@ -67,18 +70,21 @@ class ApplicationRepository implements ApplicationInterface
         $nextId = $lastApplication ? $lastApplication->id + 1 : 1;
         $data["application_number"] = 'APP' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
         
-        return Application::create($data);
+        $application = Application::create($data);
+        // $application->user->notify(new ApplicationApplied($application));
+        $userToNotify = ApprovalHelper::getUsers(Roles::RPS_TEAM);
+        Notification::send($userToNotify, new ApplicationApplied($application));
+        return $application;
     }
 
     public function update(array $data,$id){
-       return Application::whereId($id)->update($data);
+        return Application::whereId($id)->update($data);
     }
     
     public function delete($id){
         $application = Application::findOrFail($id);
         if($application){
             $application->delete(); // This triggers soft delete if the model uses SoftDeletes
-            //Approval::where('application_id',$id)->get();
              Approval::create([
                 'application_id' => $id,
                 'approving_role' => Roles::PROPONENTS,

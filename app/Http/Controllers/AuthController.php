@@ -92,7 +92,7 @@ class AuthController extends Controller
 
         }catch(\Exception $ex){
             $errorData = ['email' => $request->email];
-            return ApiResponseClass::sendResponse($errorData, $ex->getMessage(), 401, false);
+            return ApiResponseClass::sendResponse($errorData, "", 401, false);
         }
     }
 

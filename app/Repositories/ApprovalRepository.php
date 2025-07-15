@@ -29,7 +29,10 @@ class ApprovalRepository implements ApprovalInterface
       // Get current approval role from helper
       $applicationId = $data['application_id'];
       $currentRole = ApprovalHelper::getCurrentApprovalRole($applicationId);
-      if($currentRole != $data["approving_role"]){
+      if($data["status"] == "re_submit"){
+         $data["approving_role"] = $currentRole;
+      }
+      elseif($currentRole != $data["approving_role"]){
              throw new \Exception("Not allowed to approve.", 999);
       }
 

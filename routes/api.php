@@ -15,11 +15,6 @@ use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\ApplicationFilesController;
 use Illuminate\Support\Facades\Log;
 
-// Route::options('/{any}', function () { return response()->json([], 204); })->where('any', '.*');
-// Route::options('/{any}', function () {
-//     return response()->json([], 204);
-// })->where('any', '.*');
-
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/send-verification', [AuthController::class, 'sendVerificationEmail']);
@@ -50,16 +45,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/approvals',ApprovalController::class); 
     // Route::apiResource('/application-files',ApplicationFilesController::class);
     Route::post('/application-files/{file_id}',[ApplicationFilesController::class, 'update']);
-    Route::post('/approvals/{id}/confirm-submission', [ApprovalController::class, 'confirmDocumentsSubmission']);    
+    Route::post('/approvals/{id}/confirm-submission', [ApprovalController::class, 'confirmDocumentsSubmission']);
 });
 
-// Route::get('/download-file', function () {
-//         return response()->json([
-//         'test' => 'okay',
-//     ]);
-// });
-
-Route::get('/download-file', function () {
+Route::get('`/download-file`', function () {
     $businessName = request()->query('business_name');
     $filename = request()->query('file_name');
     if (!request()->hasValidSignature()) {
@@ -70,7 +59,6 @@ Route::get('/download-file', function () {
     // $path = storage_path("app/private/application_files/{$businessName}/{$filename}");
     // $path = storage_path('app' . DIRECTORY_SEPARATOR .'private' . DIRECTORY_SEPARATOR .'application_files' . DIRECTORY_SEPARATOR .$businessName . DIRECTORY_SEPARATOR .$filename);
     $path = storage_path(implode(DIRECTORY_SEPARATOR, ['app','private','application_files',$businessName,$filename]));
-    Log::info("Checking file path: {$path}");
 
     if (!file_exists($path)) {
         return response()->json(['message' => 'File not found'], 404); // <-- fixed typo from 'jdson' to 'json'
@@ -81,6 +69,12 @@ Route::get('/download-file', function () {
         'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
     ]);
 })->name('download-file');
+
+// Route::get('/download-file', function () {
+//         return response()->json([
+//         'test' => 'okay',
+//     ]);
+// });
 
 
 //test here

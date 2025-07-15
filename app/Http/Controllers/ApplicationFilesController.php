@@ -32,8 +32,9 @@ class ApplicationFilesController extends Controller
     {
         $key = collect($request->allFiles())->keys()->first();
         $file = $request->file($key);
+        Log::info($file);
 
-        if (!$file || !$file->isValid()) {
+        if ((!$file || !$file->isValid()) && !$request->business_name) {
             return ApiResponseClass::sendResponse([], 'No valid file uploaded.', 422, false);
         }
 
@@ -49,6 +50,8 @@ class ApplicationFilesController extends Controller
                 'file_type' => $mimeType,
                 'file_path' => $filePath,
             ];
+            Log::debug($data_file);
+            Log::info($id);
             $this->interface->update($data_file, $id);
             return ApiResponseClass::sendResponse([],'Application file updated.',201);
         } else {

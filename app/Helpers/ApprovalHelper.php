@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Application;
 use App\Models\Approval;
+use App\Models\User;
 use App\Constants\Roles;
 
 use Illuminate\Support\Facades\Log;
@@ -56,12 +57,17 @@ class ApprovalHelper
                 $latestApproval->update(['status' => 'completed']);
             }
         // } elseif ($latestApproval->status === 'rejected') {
-        } elseif (in_array($latestApproval->status, ['rejected', 'for_survey'])) {
+        } elseif (in_array($latestApproval->status, ['rejected', 'for_survey', 're_submit'])) {
             Approval::create([
                 'application_id' => $applicationId,
                 'approving_role' => $latestApproval->approving_role,
                 'status' => 'pending' // Allow re-submission
             ]);
         }
+    }
+
+    public static function getUsers($role)
+    {
+        return User::where('role',$role)->get();
     }
 }
