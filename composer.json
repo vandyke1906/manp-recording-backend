@@ -14,6 +14,7 @@
         "cloudinary-labs/cloudinary-laravel": "^3.0",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
+        "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.10.1",
         "tightenco/ziggy": "^2.4"
@@ -72,7 +73,7 @@
             "php -S 127.0.0.1:8080 -t public"
         ],
         "devq": "concurrently \"php artisan queue:work\" \"php -S 127.0.0.1:8080 -t public\"",
-        "serve": "concurrently \"php artisan queue:work\" \"php artisan serve --port=8080\"",
+        "serve": "concurrently \"php artisan queue:work\" \"php artisan serve --port=8080\" \"php artisan reverb:start --port=6001\"",
         "testdata": [
             "@php artisan migrate",
             "@php artisan db:seed"

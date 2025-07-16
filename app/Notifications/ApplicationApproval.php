@@ -7,17 +7,17 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ApplicationApplied extends Notification
+class ApplicationApproval extends Notification
 {
     use Queueable;
-    protected $application;
+    protected $data;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($application)
+    public function __construct($data)
     {
-        $this->application = $application;
+        $this->data = $data;
     }
 
     /**
@@ -49,11 +49,9 @@ class ApplicationApplied extends Notification
      */
     public function toArray(object $notifiable): array
     {
-         return [
-            'application_number' => $this->application->application_number,
-            'application_date' => $this->application->application_date,
-            'full_name' => $this->application->full_name,
-            'message' => "New ${$this->application->application_type->name} has been submitted."
+        return [
+            'application_number' => $this->data->application->application_number,
+            'message' => "Your {$this->data->application->application_type->name} has been {$this->data->status}."
         ];
     }
 }

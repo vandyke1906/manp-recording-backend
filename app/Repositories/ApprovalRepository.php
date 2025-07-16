@@ -5,6 +5,8 @@ use App\Models\Application;
 use App\Models\Approval;
 use App\Interfaces\ApprovalInterface;
 use App\Helpers\ApprovalHelper;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ApplicationApproval;
 
 use Illuminate\Support\Facades\Log;
 
@@ -28,9 +30,11 @@ class ApprovalRepository implements ApprovalInterface
       //  return Approval::create($data);
       // Get current approval role from helper
       $applicationId = $data['application_id'];
+      $isResubmit = false;
       $currentRole = ApprovalHelper::getCurrentApprovalRole($applicationId);
       if($data["status"] == "re_submit"){
          $data["approving_role"] = $currentRole;
+         $isResubmit = true;
       }
       elseif($currentRole != $data["approving_role"]){
              throw new \Exception("Not allowed to approve.", 999);
@@ -58,8 +62,15 @@ class ApprovalRepository implements ApprovalInterface
          Application::whereId($applicationId)->update(['survey_date' => $data['survey_date'] ]);
       }
 
-      return $latestApproval;
+      if($isResubmit == true){
+         $usersToNotify = ApprovalHelper::getUsers($latestApproval->approving_role);
+         Notification::send($proponent, new ApplicationApproval($latestApproval));
+      } else {
+         $proponent = $latestApproval->application->user;
+         Notification::send($proponent, new ApplicationApproval($latestApproval));
+      }
 
+      return $latestApproval;
     }
 
     public function update(array $data,$id){
@@ -80,6 +91,11 @@ class ApprovalRepository implements ApprovalInterface
             'approving_role' => $initialRole,
             'status' => 'pending' // Allow re-submission
         ]);
+
+        //for notification pnly
+         $proponent = $lastApproval->application->user;
+         $lastApproval["status"] = "confirmed and being reviewed.";
+         Notification::send($proponent, new ApplicationApproval($lastApproval));
         return true;
     }
 }

@@ -29,5 +29,8 @@ class Approval extends Model
         return $this->belongsTo(User::class, 'user_id')->select('id', 'first_name', 'middle_name', 'last_name', 'suffix');
     }
 
+    public function application(){
+        return $this->belongsTo(Application::class, 'application_id');
+    }
 
 }

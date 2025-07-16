@@ -58,6 +58,11 @@ class Application extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function application_type()
+    {
+        return $this->belongsTo(ApplicationType::class, 'application_type_id');
+    }
     
 
 }

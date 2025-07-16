@@ -23,7 +23,7 @@ class ApplicationRepository implements ApplicationInterface
     public function index($user){
         switch ($user->role) {
             case Roles::PROPONENTS: {
-                return Application::withTrashed()->where("user_id", $user->id)
+                return Application::withTrashed()->with("application_type")->where("user_id", $user->id)
                 ->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
                 }])->get();
@@ -31,7 +31,7 @@ class ApplicationRepository implements ApplicationInterface
             case Roles::RPS_TEAM:
             case Roles::MANAGER:
             case Roles::ADMINISTRATOR: {
-                return Application::with(['approvals' => function ($query) {
+                return Application::with("application_type")->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
                 }])->get();
             }
@@ -49,7 +49,7 @@ class ApplicationRepository implements ApplicationInterface
 
         switch ($user->role) {
             case Roles::PROPONENTS: {
-                return Application::withTrashed()->with(['approvals' => function ($query) {
+               return Application::withTrashed()->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
                 }, 'approvals.approver_name'])->where('id', $id)->where('user_id', $user->id)->firstOrFail();
             }
@@ -72,8 +72,9 @@ class ApplicationRepository implements ApplicationInterface
         
         $application = Application::create($data);
         // $application->user->notify(new ApplicationApplied($application));
-        $userToNotify = ApprovalHelper::getUsers(Roles::RPS_TEAM);
-        Notification::send($userToNotify, new ApplicationApplied($application));
+        $rpsUsers = ApprovalHelper::getUsers(Roles::RPS_TEAM);
+        Notification::send($rpsUsers, new ApplicationApplied($application));
+
         return $application;
     }
 
