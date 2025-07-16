@@ -41,27 +41,31 @@ class ApplicationRepository implements ApplicationInterface
     }
 
     public function getById($id, $user=null){
-        if(!$user){
-            return Application::with(['approvals' => function ($query) {
-                $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
-            }, 'approvals.approver_name'])->findOrFail($id);
-        }
-
-        switch ($user->role) {
-            case Roles::PROPONENTS: {
-               return Application::withTrashed()->with(['approvals' => function ($query) {
-                    $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
-                }, 'approvals.approver_name'])->where('id', $id)->where('user_id', $user->id)->firstOrFail();
-            }
-            case Roles::RPS_TEAM:
-            case Roles::MANAGER:
-            case Roles::ADMINISTRATOR: {
+        try{
+            if(!$user){
                 return Application::with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
                 }, 'approvals.approver_name'])->findOrFail($id);
             }
-            default:
-                return [];
+
+            switch ($user->role) {
+                case Roles::PROPONENTS: {
+                return Application::withTrashed()->with(['approvals' => function ($query) {
+                        $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+                    }, 'approvals.approver_name'])->where('id', $id)->where('user_id', $user->id)->firstOrFail();
+                }
+                case Roles::RPS_TEAM:
+                case Roles::MANAGER:
+                case Roles::ADMINISTRATOR: {
+                    return Application::with(['approvals' => function ($query) {
+                        $query->where('status', '!=', 'pending')->orderBy('approved_at', 'desc');
+                    }, 'approvals.approver_name'])->findOrFail($id);
+                }
+                default:
+                    return [];
+            }
+        }   catch (ModelNotFoundException $exception) {
+            throw $exception;
         }
     }
 

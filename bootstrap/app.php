@@ -23,11 +23,33 @@ return Application::configure(basePath: dirname(__DIR__))
         );
     })
     ->withExceptions(function (Exceptions $exceptions) {
-         $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Unauthenticated.',
-            'data' => null
-        ], 401);
-    });
+        $exceptions->render(function (InvalidOrderException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Not Found!',
+                'data' => null
+            ], 404);
+        });
+        $exceptions->render(function (Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Not Found!',
+                'data' => null
+            ], 404);
+         });
+        $exceptions->render(function (Illuminate\Database\Eloquent\ModelNotFoundException $e, $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Not Found!',
+                'data' => null
+            ], 404);
+         });
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+                'data' => null
+            ], 401);
+         });
+         
     })->create();
