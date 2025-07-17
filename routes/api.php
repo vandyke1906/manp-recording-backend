@@ -14,6 +14,7 @@ use App\Http\Controllers\CapitalizationController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\ApplicationFilesController;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -46,29 +47,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::apiResource('/application-files',ApplicationFilesController::class);
     Route::post('/application-files/{file_id}',[ApplicationFilesController::class, 'update']);
     Route::post('/approvals/{id}/confirm-submission', [ApprovalController::class, 'confirmDocumentsSubmission']);
+
+
+    
+
+    Route::get('/download-file', function () {
+        $businessName = request()->query('business_name');
+        $filename = request()->query('file_name');
+        if (!request()->hasValidSignature()) {
+            return response()->json([
+                'message' => 'Unauthorized access',
+            ], 403);
+        }
+        // $path = storage_path("app/private/application_files/{$businessName}/{$filename}");
+        // $path = storage_path('app' . DIRECTORY_SEPARATOR .'private' . DIRECTORY_SEPARATOR .'application_files' . DIRECTORY_SEPARATOR .$businessName . DIRECTORY_SEPARATOR .$filename);
+        $path = storage_path(implode(DIRECTORY_SEPARATOR, ['app','private','application_files',$businessName,$filename]));
+
+        if (!file_exists($path)) {
+            return response()->json(['message' => 'File not found'], 404); // <-- fixed typo from 'jdson' to 'json'
+        }
+
+        return response()->file($path, [
+            'Content-Type' => mime_content_type($path),
+            'Content-Disposition' => 'inline; filename="' . basename($path) . '"',
+            'Content-Transfer-Encoding', 'binary'
+            // 'Content-Disposition' => 'attachment; filename="' . basename($path) . '"'
+        ]);
+    })->name('download-file');
 });
-
-Route::get('`/download-file`', function () {
-    $businessName = request()->query('business_name');
-    $filename = request()->query('file_name');
-    if (!request()->hasValidSignature()) {
-        return response()->json([
-            'message' => 'Unauthorized access',
-        ], 403);
-    }
-    // $path = storage_path("app/private/application_files/{$businessName}/{$filename}");
-    // $path = storage_path('app' . DIRECTORY_SEPARATOR .'private' . DIRECTORY_SEPARATOR .'application_files' . DIRECTORY_SEPARATOR .$businessName . DIRECTORY_SEPARATOR .$filename);
-    $path = storage_path(implode(DIRECTORY_SEPARATOR, ['app','private','application_files',$businessName,$filename]));
-
-    if (!file_exists($path)) {
-        return response()->json(['message' => 'File not found'], 404); // <-- fixed typo from 'jdson' to 'json'
-    }
-
-    return response()->file($path, [
-        'Content-Type' => mime_content_type($path),
-        'Content-Disposition' => 'inline; filename="' . basename($path) . '"'
-    ]);
-})->name('download-file');
 
 // Route::get('/download-file', function () {
 //         return response()->json([
