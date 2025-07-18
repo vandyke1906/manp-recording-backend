@@ -5,8 +5,6 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\ForceJsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Middleware\HandleCors;
-
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -16,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->prepend(HandleCors::class); 
+        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class); 
         $middleware->prepend(ForceJsonResponse::class); // ✅ Ensure it is globally applied
         $middleware->trustProxies(
             at: '*',
