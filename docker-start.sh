@@ -10,7 +10,7 @@ php artisan config:cache
 php artisan storage:link
 
 # Run database migrations if needed
-php artisan migrate --force
+php artisan migrate:refresh --force
 
 #add initial db
 php artisan db:seed --force
