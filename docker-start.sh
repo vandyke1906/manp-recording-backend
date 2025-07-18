@@ -4,6 +4,7 @@
 php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
+php artisan config:cache
 
 # Create symbolic link for public storage access
 php artisan storage:link
