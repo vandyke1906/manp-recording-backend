@@ -20,20 +20,24 @@ class ApplicationRepository implements ApplicationInterface
     {
     }
 
-    public function index($user){
+    public function index($user, $page = null){
         switch ($user->role) {
             case Roles::PROPONENTS: {
-                return Application::withTrashed()->with("application_type")->where("user_id", $user->id)
+                $query = Application::withTrashed()->with("application_type")->where("user_id", $user->id)
                 ->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
-                }])->orderBy('application_date', 'desc')->get();
+                }])->orderBy('application_date', 'desc');
+                
+                return $page ? $query->paginate($page) : $query->get(); 
             }
             case Roles::RPS_TEAM:
             case Roles::MANAGER:
             case Roles::ADMINISTRATOR: {
-                return Application::with("application_type")->with(['approvals' => function ($query) {
+                $query = Application::with("application_type")->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
-                }])->orderBy('application_date', 'desc')->get();
+                }])->orderBy('application_date', 'desc');
+                
+                return $page ? $query->paginate($page) : $query->get(); 
             }
             default:
                 return [];

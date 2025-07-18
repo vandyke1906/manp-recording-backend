@@ -40,7 +40,7 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $data = $this->interface->index($request->user())->values();
+        $data = $this->interface->index($request->user(), $request->query('perPage', 10))->values();
         return ApiResponseClass::sendResponse($data,'',200);
     }
 
@@ -95,7 +95,8 @@ class ApplicationController extends Controller
             $folder_business = Str::slug($request->business_name);
             foreach ($application_files as $key => $file) {
                 if ($file instanceof UploadedFile && !$file->getError()) {
-                    $mimeType = $file->getClientMimeType();
+                    // $mimeType = $file->getClientMimeType();
+                    $mimeType = $file->getMimeType();
                     $extension = $file->getClientOriginalExtension();
                     $fileName = "{$key}.{$extension}";
                     $tempPath = 'application_files' . DIRECTORY_SEPARATOR . $folder_business . DIRECTORY_SEPARATOR . $fileName;
@@ -125,7 +126,7 @@ class ApplicationController extends Controller
                 'data' => $application,
             ])->setPaper('folio', 'portrait');
 
-            Storage::put($pdfFilePath, $pdf->output());
+            Storage::put($pdfFilePath, $pdf->output(), ['visibility' => 'private','ContentType' => 'application/pdf']);
 
             // Save metadata like other files
             $data_file = [
@@ -158,6 +159,7 @@ class ApplicationController extends Controller
 
     public function show($id, Request $request)
     {
+        if(!$id) return ApiResponseClass::sendResponse([], 'Invalid Application.', 401, false);
         $user = $request->user();
         $application = $this->interface->getById($id, $user);
         if($application){

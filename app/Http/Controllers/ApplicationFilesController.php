@@ -28,6 +28,7 @@ class ApplicationFilesController extends Controller
     public function create(){ }
     public function store(Storeapplication_filesRequest $request){ }
     public function show($id, Request $request) {
+        if(!$id) return response()->json(['message' => 'File not found.'], 404);
         if (!$request->hasValidSignature()) {
             return response()->json(['message' => 'Unauthorized access'], 403);
         }
@@ -47,10 +48,12 @@ class ApplicationFilesController extends Controller
         if (!file_exists($path)) {
             return response()->json(['message' => 'File not found'], 404); 
         }
-        
+
+        // return response()->file($path);
+
         return response()->file($path, [
             'Content-Type' => $application_file->file_type,
-            'Content-Disposition' => 'inline; filename="' . basename($application_file->file_name) . '"',
+            'Content-Disposition' => 'inline; filename="' . $application_file->file_name . '"'
         ]);
     }
     public function edit($id, Request $request) { }

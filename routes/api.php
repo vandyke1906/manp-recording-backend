@@ -83,6 +83,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 //     ]);
 // });
 
+Route::get('/download-test/{id}',[ApplicationFilesController::class, 'show'])->name('download-test');
+
 
 //test here
 Route::get('/debug-csrf', function () {
