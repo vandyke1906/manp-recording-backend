@@ -17,7 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->prepend(HandleCors::class); 
-        // $middleware->prepend(CorsMiddleware::class); // ✅ Ensure it is globally applied
         $middleware->prepend(ForceJsonResponse::class); // ✅ Ensure it is globally applied
         $middleware->trustProxies(
             at: '*',
