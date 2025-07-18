@@ -24,8 +24,8 @@ nginx &
 # Start Laravel queue worker in the foreground (keeps container running)
 php artisan queue:work --sleep=3 --tries=3 &
 
-# ✅ Start Laravel Reverb server in background
-php artisan reverb:start --port=6001 &
+# Start Laravel Reverb (WebSocket server)
+php artisan reverb:start --host=0.0.0.0 --port=6001
 
-# ✅ Wait for all background jobs
-wait
+# Prevent container from exiting
+tail -f /dev/null
