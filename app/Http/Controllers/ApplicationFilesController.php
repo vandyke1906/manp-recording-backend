@@ -12,6 +12,8 @@ use App\Interfaces\ApplicationFilesInterface;
 use \Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use App\Constants\Roles;
+use Illuminate\Support\Facades\Storage;
 
 class ApplicationFilesController extends Controller
 {
@@ -25,7 +27,37 @@ class ApplicationFilesController extends Controller
     public function index(){ }
     public function create(){ }
     public function store(Storeapplication_filesRequest $request){ }
-    public function show($id, Request $request) { }
+    public function show($id, Request $request) {
+        if (!$request->hasValidSignature()) {
+            return response()->json(['message' => 'Unauthorized access'], 403);
+        }
+        
+        $application_file = $this->interface->getById($id);
+        if(!$application_file){
+            return response()->json(['message' => 'File not found.'], 404);
+        }
+        
+        $user = $request->user();
+        // Log::debug($application_file);
+        // Log::debug($user);
+        // Log::debug(Roles::PROPONENTS);
+        if($user->id != $application_file->application->user_id || $user->role != Roles::PROPONENTS){
+            return response()->json(['message' => 'Unauthorized access.'], 403);
+        }
+        
+        
+        // $path = $application_file->file_path;
+        $path = storage_path('app' . DIRECTORY_SEPARATOR .'private' . DIRECTORY_SEPARATOR .$application_file->file_path);
+
+        if (!file_exists($path)) {
+        // if (!Storage::disk("local")->exists($path)) {
+            return response()->json(['message' => 'File not found'], 404); 
+        }
+        return response()->file($path, [
+            'Content-Type' => $application_file->file_type,
+            'Content-Disposition' => 'inline; filename="' . basename($application_file->file_name) . '"',
+        ]);
+    }
     public function edit($id, Request $request) { }
     
     public function update(Updateapplication_filesRequest $request, $id)
@@ -45,6 +77,7 @@ class ApplicationFilesController extends Controller
             $fileName = "{$key}.{$extension}";
             $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
             $data_file = [
+                'name' => $key,
                 'file_name' => $fileName,
                 'file_size' => $file->getSize(),
                 'file_type' => $mimeType,

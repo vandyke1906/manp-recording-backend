@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <title>SAPA Application</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1c1c1c;
-      color: #ffffff;
-      padding: 40px;
+    body {  
+        background-color: white;
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
     }
     .header {
       text-align: center;
@@ -89,7 +89,7 @@
   <table>
     <tr>
       <td style="width: 15%;">Date Filed:</td>
-      <td style="width: 35%;"><span class="underline">{{$DateFiled}}</span></td>
+      <td style="width: 35%;"><span class="underline">{{$data->application_date}}</span></td>
       <td style="width: 10%;">Status:</td>
       <td>
         <label><input type="checkbox"> New</label>
@@ -102,17 +102,17 @@
   <table>
     <tr>
       <td style="width: 20%;">Name of Applicant:</td>
-      <td colspan="3"><span class="underline">{{$Applicant}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->user->full_name}}</span></td>
     </tr>
     <tr>
       <td>Address:</td>
-      <td colspan="3"><span class="underline">{{$Address}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->address}}</span></td>
     </tr>
     <tr>
       <td>Contact Number:</td>
-      <td><span class="underline">{{$ContactNumber}}</span></td>
+      <td><span class="underline">{{$data->contact_number}}</span></td>
       <td>Email Address:</td>
-      <td><span class="underline">{{$EmailAddress}}</span></td>
+      <td><span class="underline">{{$data->email_address}}</span></td>
     </tr>
   </table>
 
@@ -122,12 +122,12 @@
       <td style="width: 25%;"><input type="checkbox"> Cooperative</td>
       <td style="width: 25%;"><input type="checkbox"> Corporation</td>
       <td style="width: 25%;"><input type="checkbox"> Indigenous People</td>
-      <td><span class="underline">{{$IndigenousPeople}}</span></td>
+      <td><span class="underline"></span></td>
     </tr>
     <tr>
       <td><input type="checkbox"> Individual</td>
       <td><input type="checkbox"> Local Government Unit</td>
-      <td colspan="2"><span class="underline">{{$LocalGovernmentUnit}}</span></td>
+      <td colspan="2"><span class="underline"></span></td>
     </tr>
     <tr>
       <td><input type="checkbox"> National Government Agency</td>
@@ -137,7 +137,7 @@
     </tr>
     <tr>
       <td>Capitalization:</td>
-      <td colspan="3"><span class="underline">{{$Capitalization}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->capitalization->name}}</span></td>
     </tr>
   </table>
 
@@ -145,23 +145,23 @@
   <table>
     <tr>
       <td style="width: 20%;">Name:</td>
-      <td colspan="3"><span class="underline">{{$BusinessName}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->business_name}}</span></td>
     </tr>
     <tr>
       <td>Address:</td>
-      <td colspan="3"><span class="underline">{{$BusinessAddress}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->business_address}}</span></td>
     </tr>
     <tr>
       <td>Nature of Business:</td>
-      <td colspan="3"><span class="underline">{{$NatureOfBusiness}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->business_nature->name}}</span></td>
     </tr>
     <tr>
       <td>Status:</td>
-      <td colspan="3"><span class="underline">{{$StatusOfBusiness}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->business_status->name}}</span></td>
     </tr>
     <tr>
       <td>Brief Description:</td>
-      <td colspan="3"><span class="underline">{{$BriefDescription}}</span></td>
+      <td colspan="3"><span class="underline">{{$data->business_description}}</span></td>
     </tr>
   </table>
 
@@ -174,7 +174,7 @@
 
   <div class="signature">
     <div>
-      <div class="line">{{$Applicant}}</div>
+      <div class="line">{{$data->user->full_name}}</div>
       <div><em>Name of Applicant/Proponent</em></div>
     </div>
     <div>

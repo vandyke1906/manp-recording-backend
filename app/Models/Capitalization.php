@@ -14,4 +14,9 @@ class Capitalization extends Model
         'name',
         'description',
     ];
+
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
+    }
 }

@@ -15,7 +15,7 @@ class ApplicationType extends Model
         'description',
     ];
 
-     public function applications(): HasMany
+    public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
     }

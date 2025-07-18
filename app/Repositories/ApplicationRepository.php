@@ -26,14 +26,14 @@ class ApplicationRepository implements ApplicationInterface
                 return Application::withTrashed()->with("application_type")->where("user_id", $user->id)
                 ->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
-                }])->get();
+                }])->orderBy('application_date', 'desc')->get();
             }
             case Roles::RPS_TEAM:
             case Roles::MANAGER:
             case Roles::ADMINISTRATOR: {
                 return Application::with("application_type")->with(['approvals' => function ($query) {
                     $query->where('status', '!=', 'pending')->latest('approved_at')->limit(1); 
-                }])->get();
+                }])->orderBy('application_date', 'desc')->get();
             }
             default:
                 return [];
@@ -76,6 +76,9 @@ class ApplicationRepository implements ApplicationInterface
         
         $application = Application::create($data);
         // $application->user->notify(new ApplicationApplied($application));
+        
+        // dispatch(new SendVerificationLink($user->email, $user));
+
         $rpsUsers = ApprovalHelper::getUsers(Roles::RPS_TEAM);
         Notification::send($rpsUsers, new ApplicationApplied($application));
 

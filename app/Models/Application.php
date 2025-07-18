@@ -63,6 +63,21 @@ class Application extends Model
     {
         return $this->belongsTo(ApplicationType::class, 'application_type_id');
     }
+
+    public function capitalization()
+    {
+        return $this->belongsTo(Capitalization::class, 'capitalization_id');
+    }
+
+    public function business_nature()
+    {
+        return $this->belongsTo(BusinessNature::class, 'business_nature_id');
+    }
+    
+    public function business_status()
+    {
+        return $this->belongsTo(BusinessStatus::class, 'business_status_id');
+    }
     
 
 }

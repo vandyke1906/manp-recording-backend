@@ -62,13 +62,17 @@ class ApprovalRepository implements ApprovalInterface
          Application::whereId($applicationId)->update(['survey_date' => $data['survey_date'] ]);
       }
 
-      if($isResubmit == true){
-         $usersToNotify = ApprovalHelper::getUsers($latestApproval->approving_role);
-         Notification::send($proponent, new ApplicationApproval($latestApproval));
-      } else {
-         $proponent = $latestApproval->application->user;
-         Notification::send($proponent, new ApplicationApproval($latestApproval));
-      }
+      try {
+         if($isResubmit == true){
+            $usersToNotify = ApprovalHelper::getUsers($latestApproval->approving_role);
+            Notification::send($proponent, new ApplicationApproval($latestApproval));
+         } else {
+            $proponent = $latestApproval->application->user;
+            Notification::send($proponent, new ApplicationApproval($latestApproval));
+         }
+      } catch(\Exception $ex){
+            Log::error(`ApprovalRepo::store => {$ex->getMessage()}`);
+        }
 
       return $latestApproval;
     }

@@ -98,7 +98,8 @@ class ApplicationController extends Controller
                     $mimeType = $file->getClientMimeType();
                     $extension = $file->getClientOriginalExtension();
                     $fileName = "{$key}.{$extension}";
-                    $filePath = $file->storeAs("application_files/{$folder_business}", $fileName);
+                    $tempPath = 'application_files' . DIRECTORY_SEPARATOR . $folder_business . DIRECTORY_SEPARATOR . $fileName;
+                    $filePath = $file->storeAs($tempPath);
                     $data_file = [
                         'application_id' => $application->id,
                         'name' => $key,
@@ -115,14 +116,15 @@ class ApplicationController extends Controller
 
             // Generate PDF summary
            // Generate PDF with static or custom data
-            $pdf = Pdf::loadView('documents.sapa_application_template', [
-                'title' => 'SAPA Application Form',
-                'date' => now()->format('F j, Y'),
-            ]);
-
             // Store the PDF
             $pdfFileName = 'sapa_application_form.pdf';
-            $pdfFilePath = "application_files/{$folder_business}/{$pdfFileName}";
+            // $pdfFilePath = "application_files{DIRECTORY_SEPARATOR}{$folder_business}{DIRECTORY_SEPARATOR}{$pdfFileName}";
+            $pdfFilePath = 'application_files' . DIRECTORY_SEPARATOR . $folder_business . DIRECTORY_SEPARATOR . $pdfFileName;
+            $pdf = Pdf::loadView('documents.sapa_application_template', [
+                'title' => 'SAPA Application Form',
+                'data' => $application,
+            ])->setPaper('folio', 'portrait');
+
             Storage::put($pdfFilePath, $pdf->output());
 
             // Save metadata like other files
@@ -172,7 +174,8 @@ class ApplicationController extends Controller
             $folder_business = Str::slug($application->business_name);
              foreach ($application_files as $file) {
                 // Log::warning($file);
-                $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $file->file_name ]);
+                // $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $file->file_name ]);
+                $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['id' => $file->id ]);
                 $attachedFiles[] = [
                     'uri' => $signedUrl,
                     'file_id' => $file->id,
@@ -213,10 +216,10 @@ class ApplicationController extends Controller
 
         // Define the path inside Laravel's storage
         $folder_business = Str::slug($application->business_name);
-        // $filePath = "private/application_files/{$folder_business}/{$application_file->file_name}";
 
         // Generate a **signed URL** that expires after a set duration
-        $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
+        //$signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $application_file->file_name ]);
+        $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['id' => $$file->id ]);
         return response()->json([
             'uri' => $signedUrl,
             'file_id' => $application_file->id,

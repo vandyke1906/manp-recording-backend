@@ -13,7 +13,7 @@ class ApplicationFilesRepository implements ApplicationFilesInterface
     }
 
     public function getById($id){
-       return ApplicationFiles::findOrFail($id);
+       return ApplicationFiles::with('application')->findOrFail($id);
     }
 
     public function getByApplicationId($appId){

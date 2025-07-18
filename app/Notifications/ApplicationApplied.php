@@ -53,7 +53,8 @@ class ApplicationApplied extends Notification
             'application_number' => $this->application->application_number,
             'application_date' => $this->application->application_date,
             'full_name' => $this->application->full_name,
-            'message' => "New ${$this->application->application_type->name} has been submitted."
+            // 'message' => "New ${$this->application->application_type->name} has been submitted."
+            'message' => "New application has been submitted."
         ];
     }
 }
