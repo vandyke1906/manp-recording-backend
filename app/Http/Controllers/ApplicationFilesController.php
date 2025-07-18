@@ -39,7 +39,7 @@ class ApplicationFilesController extends Controller
         }
         
         $user = $request->user();
-        if($user->id != $application_file->application->user_id || $user->role != Roles::PROPONENTS){
+        if($user->id != $application_file->application->user_id && $user->role == Roles::PROPONENTS){
             return response()->json(['message' => 'Unauthorized access.'], 403);
         }
         
