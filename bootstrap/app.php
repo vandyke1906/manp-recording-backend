@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\ForceJsonResponse;
 use Illuminate\Http\Request;
+use Fruitcake\Cors\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // $middleware->prepend(CorsMiddleware::class); // ✅ Ensure it is globally applied
+        $middleware->prepend(HandleCors::class); // ✅ <--- This line enables CORS
         $middleware->prepend(ForceJsonResponse::class); // ✅ Ensure it is globally applied
         $middleware->trustProxies(
             at: '*',
