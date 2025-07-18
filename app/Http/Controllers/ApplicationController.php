@@ -40,7 +40,7 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $data = $this->interface->index($request->user(), $request->query('perPage', 10))->values();
+        $data = $this->interface->index($request->user(), $request->query('perPage', 10));
         return ApiResponseClass::sendResponse($data,'',200);
     }
 
