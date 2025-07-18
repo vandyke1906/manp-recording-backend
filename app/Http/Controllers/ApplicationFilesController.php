@@ -38,21 +38,16 @@ class ApplicationFilesController extends Controller
         }
         
         $user = $request->user();
-        // Log::debug($application_file);
-        // Log::debug($user);
-        // Log::debug(Roles::PROPONENTS);
         if($user->id != $application_file->application->user_id || $user->role != Roles::PROPONENTS){
             return response()->json(['message' => 'Unauthorized access.'], 403);
         }
         
-        
-        // $path = $application_file->file_path;
         $path = storage_path('app' . DIRECTORY_SEPARATOR .'private' . DIRECTORY_SEPARATOR .$application_file->file_path);
 
         if (!file_exists($path)) {
-        // if (!Storage::disk("local")->exists($path)) {
             return response()->json(['message' => 'File not found'], 404); 
         }
+        
         return response()->file($path, [
             'Content-Type' => $application_file->file_type,
             'Content-Disposition' => 'inline; filename="' . basename($application_file->file_name) . '"',
