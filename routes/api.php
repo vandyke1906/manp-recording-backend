@@ -100,6 +100,10 @@ Route::get('/auth/session-debug', function () {
     ]);
 });
 
+Route::get('/cors-test', function (Request $request) {
+    return response()->json(['message' => 'CORS test passed']);
+});
+
 
 Route::fallback(function () {
     return response()->json([
