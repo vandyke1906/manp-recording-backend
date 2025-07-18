@@ -104,6 +104,10 @@ Route::get('/cors-test', function (Request $request) {
     return response()->json(['message' => 'CORS test passed']);
 });
 
+// This catches all OPTIONS requests for preflight (CORS)
+Route::options('{any}', function () {
+    return response()->json([], 204);
+})->where('any', '.*');
 
 Route::fallback(function () {
     return response()->json([
