@@ -12,7 +12,7 @@ php artisan storage:link
 php artisan migrate --force
 
 #add initial db
-php artisan db:seed
+php artisan db:seed --force
 
 # Start PHP-FPM in the background
 php-fpm & 
