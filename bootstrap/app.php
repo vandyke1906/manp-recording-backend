@@ -5,7 +5,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\ForceJsonResponse;
 use Illuminate\Http\Request;
-use Fruitcake\Cors\HandleCors;
+use Symfony\Component\HttpKernel\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,8 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->prepend(HandleCors::class); 
         // $middleware->prepend(CorsMiddleware::class); // ✅ Ensure it is globally applied
-        $middleware->prepend(HandleCors::class); // ✅ <--- This line enables CORS
         $middleware->prepend(ForceJsonResponse::class); // ✅ Ensure it is globally applied
         $middleware->trustProxies(
             at: '*',
