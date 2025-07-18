@@ -22,5 +22,10 @@ php-fpm &
 nginx &
 
 # Start Laravel queue worker in the foreground (keeps container running)
-php artisan queue:work --sleep=3 --tries=3
-php artisan reverb:start --port=6001 --sleep=5 --tries=5
+php artisan queue:work --sleep=3 --tries=3 &
+
+# ✅ Start Laravel Reverb server in background
+php artisan reverb:start --port=6001 &
+
+# ✅ Wait for all background jobs
+wait
