@@ -11,6 +11,9 @@ php artisan storage:link
 # Run database migrations if needed
 php artisan migrate --force
 
+#add initial db
+php artisan db:seed
+
 # Start PHP-FPM in the background
 php-fpm & 
 
