@@ -39,7 +39,7 @@ class Application extends Model
         'zoning_id',
     ];
 
-    protected $appends = ['current_approver_role'];
+    protected $appends = ['current_approver_role', 'full_name'];
 
     public function approvals()
     {
@@ -52,6 +52,14 @@ class Application extends Model
             ->where('status', 'pending')
             ->orderBy('created_at') // or use another sequencing strategy
             ->value('approving_role'); // make sure this is the correct column
+    }
+
+    public function getFullNameAttribute()
+    {
+        return trim("{$this->first_name} " . 
+            ($this->middle_name ? strtoupper(substr($this->middle_name, 0, 1)) . ". " : '') . 
+            "{$this->last_name} " . 
+            ($this->suffix ?? ''));
     }
 
     public function files()
