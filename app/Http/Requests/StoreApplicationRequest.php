@@ -22,7 +22,7 @@ class StoreApplicationRequest extends CommonFormRequest
      */
     public function rules(): array
     {
-        $pdfOnlyMimes = ['mimetypes:application/pdf,application/x-pdf'];
+        $acceptedMimes = ['mimetypes:application/pdf,application/x-pdf,image/jpeg,image/png'];
 
         return [
             'application_date' => ['required', 'date'],
@@ -37,17 +37,16 @@ class StoreApplicationRequest extends CommonFormRequest
             'business_status_id' => 'required',
             'capitalization_id' => 'required',
 
-            // File validations for PDF only
-            'proof_of_capitalization' => ['required', 'file', ...$pdfOnlyMimes, 'max:5120'],
-            'barangay_clearance' => ['required', 'file', ...$pdfOnlyMimes, 'max:5120'],
-            'birth_certificate_or_id' => ['required', 'file', ...$pdfOnlyMimes, 'max:5120'],
-            'ncip_document' => ['required', 'file', ...$pdfOnlyMimes, 'max:5120'],
-            'fpic_certification' => ['required', 'file', ...$pdfOnlyMimes, 'max:5120'],
-            'business_permit' => ['required', 'file', ...$pdfOnlyMimes, 'max:5120'],
-            'authorization_letter' => ['file', ...$pdfOnlyMimes, 'max:5120'],
+            // File validations using mimetypes
+            'proof_of_capitalization' => ['required', 'file', ...$acceptedMimes, 'max:5120'],
+            'barangay_clearance' => ['required', 'file', ...$acceptedMimes, 'max:5120'],
+            'birth_certificate_or_id' => ['required', 'file', ...$acceptedMimes, 'max:5120'],
+            'ncip_document' => ['required', 'file', ...$acceptedMimes, 'max:5120'],
+            'fpic_certification' => ['required', 'file', ...$acceptedMimes, 'max:5120'],
+            'business_permit' => ['required', 'file', ...$acceptedMimes, 'max:5120'],
+            'authorization_letter' => ['file', ...$acceptedMimes, 'max:5120'],
         ];
     }
-
 
 
     public function messages(): array
@@ -79,38 +78,37 @@ class StoreApplicationRequest extends CommonFormRequest
 
             'proof_of_capitalization.required' => 'Proof of capitalization is required.',
             'proof_of_capitalization.file' => 'Proof of capitalization must be a file.',
-            'proof_of_capitalization.mimetypes' => 'Proof of capitalization must be a PDF file.',
+            'proof_of_capitalization.mimetypes' => 'Proof of capitalization must be a PDF, JPEG, or PNG file.',
             'proof_of_capitalization.max' => 'Proof of capitalization must not exceed 5MB.',
 
             'barangay_clearance.required' => 'Barangay clearance is required.',
             'barangay_clearance.file' => 'Barangay clearance must be a file.',
-            'barangay_clearance.mimetypes' => 'Barangay clearance must be a PDF file.',
+            'barangay_clearance.mimetypes' => 'Barangay clearance must be a PDF, JPEG, or PNG file.',
             'barangay_clearance.max' => 'Barangay clearance must not exceed 5MB.',
 
             'birth_certificate_or_id.required' => 'Birth certificate or valid ID is required.',
             'birth_certificate_or_id.file' => 'Birth certificate or ID must be a file.',
-            'birth_certificate_or_id.mimetypes' => 'Birth certificate or ID must be a PDF file.',
+            'birth_certificate_or_id.mimetypes' => 'Birth certificate or ID must be a PDF, JPEG, or PNG file.',
             'birth_certificate_or_id.max' => 'Birth certificate or ID must not exceed 5MB.',
 
             'ncip_document.required' => 'NCIP document is required.',
             'ncip_document.file' => 'NCIP document must be a file.',
-            'ncip_document.mimetypes' => 'NCIP document must be a PDF file.',
+            'ncip_document.mimetypes' => 'NCIP document must be a PDF, JPEG, or PNG file.',
             'ncip_document.max' => 'NCIP document must not exceed 5MB.',
 
             'fpic_certification.required' => 'FPIC certification is required.',
             'fpic_certification.file' => 'FPIC certification must be a file.',
-            'fpic_certification.mimetypes' => 'FPIC certification must be a PDF file.',
+            'fpic_certification.mimetypes' => 'FPIC certification must be a PDF, JPEG, or PNG file.',
             'fpic_certification.max' => 'FPIC certification must not exceed 5MB.',
 
             'business_permit.required' => 'Business permit is required.',
             'business_permit.file' => 'Business permit must be a file.',
-            'business_permit.mimetypes' => 'Business permit must be a PDF file.',
+            'business_permit.mimetypes' => 'Business permit must be a PDF, JPEG, or PNG file.',
             'business_permit.max' => 'Business permit must not exceed 5MB.',
 
             'authorization_letter.file' => 'Authorization letter must be a file.',
-            'authorization_letter.mimetypes' => 'Authorization letter must be a PDF file.',
+            'authorization_letter.mimetypes' => 'Authorization letter must be a PDF, JPEG, or PNG file.',
             'authorization_letter.max' => 'Authorization letter must not exceed 5MB.',
         ];
-    }
-    
+    }    
 }
