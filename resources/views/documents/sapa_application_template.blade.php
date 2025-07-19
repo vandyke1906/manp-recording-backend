@@ -111,7 +111,7 @@
       <td style="width: 10%;">Date Filed:</td>
       <td style="width: 20%;"><span class="underline">{{$data->application_date}}</span></td>
       <td style="width: 15%;">Type of Applicant:</td>
-      <td style="width: 30%;"><span class="underline">{{$applicant_types->implode(', ')}}</span></td>
+      <td style="width: 30%;"><span class="underline">{{$applicant_types}}</span></td>
       <td style="width: 10%;">Status:</td>
       <td><span class="underline">New</span></td>
     </tr>

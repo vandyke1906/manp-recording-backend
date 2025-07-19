@@ -118,7 +118,7 @@ class ApplicationController extends Controller
                 }
             }
 
-            $applicantTypeNames = $application->applicant_types->pluck('name')->toArray();
+            $applicantTypeNames = implode(', ', $application->applicant_types->pluck('name')->toArray());
 
             // Generate PDF summary
            // Generate PDF with static or custom data
