@@ -118,6 +118,8 @@ class ApplicationController extends Controller
                 }
             }
 
+            // Reload with the relationship
+            $application->load('applicant_types');
             $applicantTypeNames = implode(', ', $application->applicant_types->pluck('name')->toArray());
 
             // Generate PDF summary
