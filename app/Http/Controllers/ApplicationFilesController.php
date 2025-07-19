@@ -49,12 +49,20 @@ class ApplicationFilesController extends Controller
             return response()->json(['message' => 'File not found'], 404); 
         }
 
-        // return response()->file($path);
-
         return response()->file($path, [
             'Content-Type' => $application_file->file_type,
             'Content-Disposition' => 'inline; filename="' . $application_file->file_name . '"'
         ]);
+        
+        
+        // //return response(Storage::disk('local')->get($application_file->file_path), 200)->header('Content-Type', $application_file->file_type);
+        // $relativePath = $application_file->file_path;
+        // $mime = Storage::disk('local')->mimeType($relativePath);
+        // $content = Storage::disk('local')->get($relativePath);
+
+        // return response($content, 200)
+        //     ->header('Content-Type', $mime)
+        //     ->header('Content-Disposition', 'inline; filename="' . $application_file->file_name . '"');
     }
     public function edit($id, Request $request) { }
     
