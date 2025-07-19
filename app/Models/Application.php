@@ -91,6 +91,11 @@ class Application extends Model
     {
         return $this->belongsTo(BusinessStatus::class, 'business_status_id');
     }
+
+    public function applicant_types()
+    {
+        return $this->belongsToMany(ApplicantType::class, 'applicant_type_applications');
+    }
     
 
 }
