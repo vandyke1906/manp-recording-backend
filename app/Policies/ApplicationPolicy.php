@@ -5,6 +5,8 @@ namespace App\Policies;
 use App\Models\Application;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use App\Constants\Roles;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationPolicy
 {
@@ -13,7 +15,12 @@ class ApplicationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return in_array($user->role, [
+            Roles::PROPONENTS,
+            Roles::RPS_TEAM,
+            Roles::MANAGER,
+            Roles::ADMINISTRATOR,
+        ]);
     }
 
     /**
@@ -21,7 +28,13 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $application): bool
     {
-        return false;
+        switch ($user->role) {
+            case Roles::PROPONENTS: return $user->id === $application->user_id;
+            case Roles::RPS_TEAM:
+            case Roles::MANAGER:
+            case Roles::ADMINISTRATOR: return true;
+            default: return false;
+        }
     }
 
     /**
@@ -37,7 +50,7 @@ class ApplicationPolicy
      */
     public function update(User $user, Application $application): bool
     {
-        return false;
+        return $user->id === $application->user_id;
     }
 
     /**
@@ -45,7 +58,7 @@ class ApplicationPolicy
      */
     public function delete(User $user, Application $application): bool
     {
-        return false;
+        return $user->id === $application->user_id;
     }
 
     /**

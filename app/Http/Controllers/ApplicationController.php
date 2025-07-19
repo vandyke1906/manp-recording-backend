@@ -40,6 +40,9 @@ class ApplicationController extends Controller
 
     public function index(Request $request)
     {
+        if ($request->user()->cannot('viewAny',  Application::class)) {
+            return ApiResponseClass::sendResponse([], 'Unauthorized Access.', 404, false);
+        }
         $data = $this->interface->index($request->user(), $request->query('perPage', 10));
         return ApiResponseClass::sendResponse($data,'',200);
     }
@@ -161,7 +164,11 @@ class ApplicationController extends Controller
     {
         if(!$id) return ApiResponseClass::sendResponse([], 'Invalid Application.', 401, false);
         $user = $request->user();
-        $application = $this->interface->getById($id, $user);
+        $application = $this->interface->getById($id, $user); 
+        if ($request->user()->cannot('view',  $application)) {
+            return ApiResponseClass::sendResponse([], 'Unauthorized Access.', 404, false);
+        }
+
         if($application){
             $applicant_types = $this->applicant_application_interface->getByApplicationId($id);
             $application_type_ids = [];

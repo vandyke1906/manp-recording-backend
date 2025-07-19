@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use App\Policies\ApplicationPolicy;
+
+#[UsePolicy(ApplicationPolicy::class)]
 class Application extends Model
 {
     /** @use HasFactory<\Database\Factories\ApplicationFactory> */
