@@ -88,17 +88,16 @@
 
   <table>
     <tr>
-      <td style="width: 15%;">Date Filed:</td>
-      <td style="width: 35%;"><span class="underline">{{$data->application_date}}</span></td>
+      <td style="width: 10%;">Date Filed:</td>
+      <td style="width: 20%;"><span class="underline">{{$data->application_date}}</span></td>
+      <td style="width: 15%;">Type of Applicant:</td>
+      <td style="width: 30%;"><span class="underline">{{$data->user->full_name}}</span></td>
       <td style="width: 10%;">Status:</td>
-      <td>
-        <label><input type="checkbox"> New</label>
-        <label><input type="checkbox"> Renewal</label>
-        <label><input type="checkbox"> Under MOA?</label>
-      </td>
+      <td><span class="underline">New</span></td>
     </tr>
   </table>
 
+  <div class="section-title">Proponent Details</div>
   <table>
     <tr>
       <td style="width: 20%;">Name of Applicant:</td>
@@ -113,31 +112,6 @@
       <td><span class="underline">{{$data->contact_number}}</span></td>
       <td>Email Address:</td>
       <td><span class="underline">{{$data->email_address}}</span></td>
-    </tr>
-  </table>
-
-  <div class="section-title">Type of Applicant:</div>
-  <table>
-    <tr>
-      <td style="width: 25%;"><input type="checkbox"> Cooperative</td>
-      <td style="width: 25%;"><input type="checkbox"> Corporation</td>
-      <td style="width: 25%;"><input type="checkbox"> Indigenous People</td>
-      <td><span class="underline"></span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox"> Individual</td>
-      <td><input type="checkbox"> Local Government Unit</td>
-      <td colspan="2"><span class="underline"></span></td>
-    </tr>
-    <tr>
-      <td><input type="checkbox"> National Government Agency</td>
-      <td><input type="checkbox"> Peoples Organization</td>
-      <td><input type="checkbox"> Tenured Migrant</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Capitalization:</td>
-      <td colspan="3"><span class="underline">{{$data->capitalization->name}}</span></td>
     </tr>
   </table>
 
@@ -160,6 +134,10 @@
       <td colspan="3"><span class="underline">{{$data->business_status->name}}</span></td>
     </tr>
     <tr>
+      <td>Capitalization:</td>
+      <td colspan="3"><span class="underline">{{$data->capitalization->name}}</span></td>
+    </tr>
+    <tr>
       <td>Brief Description:</td>
       <td colspan="3"><span class="underline">{{$data->business_description}}</span></td>
     </tr>
@@ -167,7 +145,7 @@
 
   <hr style="margin-top: 40px;">
 
-  <em>(To be filled out by the PASu)</em>
+  <p style="text-align: center;"><em>(To be filled out by the PASu)</em></p>
   <p>
     Consistent with DAO 2007-17, as amended, this SAPA application is found sufficient of the requirements to proceed with the processing and procurement of all requirements leading to the subsequent approval of the MANP PAMB and endorsement recommending for the issuance of the SAPA, received this __________ day of __________________, _________.
   </p>
