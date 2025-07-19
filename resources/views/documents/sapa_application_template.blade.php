@@ -4,24 +4,34 @@
   <meta charset="UTF-8">
   <title>SAPA Application</title>
   <style>
-    body {  
-        background-color: white;
-        margin: 0;
-        padding: 20px;
-        font-family: Arial, sans-serif;
+    @page {
+      size: 8.5in 13in;
+      margin: 0.5in;
     }
+
+    body {
+      background-color: white;
+      margin: 0;
+      padding: 0.5in;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+
     .header {
       text-align: center;
       margin-bottom: 20px;
     }
+
     .logo-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+
     .logo {
       height: 80px;
     }
+
     h2 {
       text-align: center;
       border-top: 1px solid #aaa;
@@ -30,20 +40,25 @@
       margin-top: 10px;
       font-size: 1.2rem;
     }
+
     table {
       width: 100%;
       border-spacing: 0;
       margin-top: 15px;
     }
+
     td {
       padding: 5px 10px;
       vertical-align: top;
     }
+
     .underline {
-      border-bottom: 1px solid #fff;
+      border-bottom: 1px solid #000;
       display: inline-block;
       width: 100%;
+      min-height: 16px;
     }
+
     .section-title {
       background-color: #444;
       color: #fff;
@@ -51,21 +66,26 @@
       padding: 6px 10px;
       margin-top: 30px;
     }
+
     .footer {
       margin-top: 40px;
     }
+
     .signature {
       display: flex;
       justify-content: space-between;
       margin-top: 60px;
     }
-    .signature div {
+
+    .signature-box {
+      width: 35%;
       text-align: center;
-      width: 45%;
     }
+
     .line {
-      border-bottom: 1px solid #fff;
+      border-bottom: 1px solid #000;
       margin-bottom: 5px;
+      height: 20px;
     }
   </style>
 </head>
@@ -91,7 +111,7 @@
       <td style="width: 10%;">Date Filed:</td>
       <td style="width: 20%;"><span class="underline">{{$data->application_date}}</span></td>
       <td style="width: 15%;">Type of Applicant:</td>
-      <td style="width: 30%;"><span class="underline">{{$data->user->full_name}}</span></td>
+      <td style="width: 30%;"><span class="underline">{{$applicant_types->implode(', ')}}</span></td>
       <td style="width: 10%;">Status:</td>
       <td><span class="underline">New</span></td>
     </tr>
@@ -151,11 +171,11 @@
   </p>
 
   <div class="signature">
-    <div>
+    <div class="signature-box">
       <div class="line">{{$data->user->full_name}}</div>
       <div><em>Name of Applicant/Proponent</em></div>
     </div>
-    <div>
+    <div class="signature-box">
       <div class="line">&nbsp;</div>
       <div><em>PASu, MANP / Received by:</em></div>
     </div>

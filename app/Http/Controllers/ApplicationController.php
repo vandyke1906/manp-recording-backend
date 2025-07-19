@@ -118,6 +118,8 @@ class ApplicationController extends Controller
                 }
             }
 
+            $applicantTypeNames = $application->applicant_types->pluck('name')->toArray();
+
             // Generate PDF summary
            // Generate PDF with static or custom data
             // Store the PDF
@@ -127,6 +129,7 @@ class ApplicationController extends Controller
             $pdf = Pdf::loadView('documents.sapa_application_template', [
                 'title' => 'SAPA Application Form',
                 'data' => $application,
+                'applicant_types' => $applicantTypeNames,
             ])->setPaper('folio', 'portrait');
 
             Storage::put($pdfFilePath, $pdf->output(), ['visibility' => 'private','ContentType' => 'application/pdf']);
@@ -182,8 +185,6 @@ class ApplicationController extends Controller
             $attachedFiles = [];
             $folder_business = Str::slug($application->business_name);
              foreach ($application_files as $file) {
-                // Log::warning($file);
-                // $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['business_name' => $folder_business, 'file_name' => $file->file_name ]);
                 $signedUrl = URL::temporarySignedRoute('download-file', now()->addDay(), ['id' => $file->id ]);
                 $attachedFiles[] = [
                     'uri' => $signedUrl,
