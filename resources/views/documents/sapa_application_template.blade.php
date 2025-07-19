@@ -78,7 +78,7 @@
     }
 
     .signature-box {
-      width: 35%;
+      width: 30%;
       text-align: center;
     }
 
