@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware('throttle:auth-check')->get('/auth/check', [AuthController::class, 'authCheck']);
     Route::post('/auth/refresh', [AuthController::class, 'refreshToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/users/updateProfile', [AuthController::class, 'updateProfile']);
     Route::get('/users', [AuthController::class, 'index']);
     Route::get('/users/profile', [AuthController::class, 'profile']);
     Route::get('/applicant-types/by-ids', [ApplicantTypeController::class, 'getByIds']);
