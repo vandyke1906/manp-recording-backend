@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\UserRegisterRequest;
-use App\Http\Requests\UpdateUserProfileRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -214,36 +213,11 @@ class AuthController extends Controller
     }
     
     public function profile(Request $request){
-        $user = $request->user()->only(['first_name', 'middle_name', 'last_name', 'suffix', 'full_name','mobile_number', 'email','telephone_number', 'address']);
+        $user = $request->user()->only(['first_name', 'middle_name', 'last_name', 'suffix','mobile_number', 'email','telephone_number', 'address']);
         if (!$user)
             return ApiResponseClass::sendResponse([], 'User not found', 404, false);
         return ApiResponseClass::sendResponse($user, 'Success', 200);
     }
-
-    public function updateProfile(UpdateUserProfileRequest $request){
-        $updateDetails =[
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'suffix' => $request->suffix,
-            'mobile_number' => $request->mobile_number,
-            'telephone_number' => $request->telephone_number,
-            'address' => $request->address,
-        ];
-        $user = $request->user();
-        Log::debug($request);
-        if(!$user) return ApiResponseClass::sendResponse([], 'User Profile failed to update.',404);
-        DB::beginTransaction();
-        try{
-             $data = $this->interface->updateProfile($updateDetails,$user->id);
-             DB::commit();
-             return ApiResponseClass::sendResponse($data, 'User Profile updated successfully.',201);
-
-        }catch(\Exception $ex){
-            return ApiResponseClass::rollback($ex);
-        }
-    }
-
     public function sendResetPassword(Request $request){
         $request->validate(['email' => 'required|email']);
         $user = User::where('email', $request->email)->first();

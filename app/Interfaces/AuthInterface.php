@@ -6,7 +6,6 @@ interface AuthInterface
 {
     public function index();
     public function register(array $data);
-    public function updateProfile(array $data, $id);
     public function login(array $data);
     public function logout(array $data);
     public function authCheck(array $data);
