@@ -36,6 +36,11 @@ class UserRepository implements AuthInterface
         return $user;
     }
 
+
+    public function updateProfile(array $data, $id){
+        return User::whereId($id)->update($data);
+    }
+
     public function loginSession(array $data){
         try {
             $user = User::where('email', $data["email"])->first();
